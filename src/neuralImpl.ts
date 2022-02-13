@@ -66,7 +66,7 @@ class TouchingBorder implements Receptor<EntityProperties> {
 }
 
 class Always implements Receptor<EntityProperties> {
-    name: string = "TB";
+    name: string = "AL";
 
     read(properties: EntityProperties): number {
         return 1;
