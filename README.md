@@ -3,7 +3,7 @@ Trying to get my feet wet with all this genetic stuff. You can see it in action 
 
 Havily inspited by [davidrandallmiller's video](https://www.youtube.com/watch?v=N3tRFayqVtk), although not using any code from it.
 
-In short, every dot on the screen is an entity with it's own genome (that affects behaviour, obviously), and every one that is on the right side of the screen by the end of generation gets to pass hos genome to next generation. Over time all of them know to move right. In general, you can see improvment in survival rate by gen 500-600, but i saw one that it took it 13000 generations, so be patient.
+In short, every dot on the screen is an entity with it's own genome (that affects behaviour, obviously), and every one that is on the right side of the screen by the end of generation gets to pass his genome to next generation. Over time all of them know to move right. In general, you can see improvment in survival rate by gen 500-600, but i saw one that it took it 13000 generations, so be patient.
 
 ## Some more details
 In current implementation every dot has 5 inputs:
