@@ -8,7 +8,7 @@ export function getRandomIntInclusive(min: number, max: number): number {
     return getRandomInt(min, max + 1);
 }
 
-export function randomChoice<T>(arr: T[]): T {
+export function randomChoice<T>(arr: ReadonlyArray<T>): T {
     return arr[getRandomInt(0, arr.length)];
 }
 

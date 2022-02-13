@@ -1,20 +1,20 @@
 import {getRandomFloat, getRandomIntInclusive, randomBoolean, randomChoice} from "./random";
 import {generateArray, isEmpty, popKey} from "./utils";
 
-interface Receptor<P> {
+export interface Receptor<P> {
     name: string;
 
     // From 0 to 1.0
-    read(properties: P): number;
+    read(properties: Readonly<P>): number;
 }
 
-interface Actor<P> {
+export interface Actor<P> {
     name: string;
 
     write(input: number, properties: P): void;
 }
 
-class Neuron<P> implements Receptor<P>, Actor<P> {
+export class Neuron<P> implements Receptor<P>, Actor<P> {
     private input: number = 0;
     public name: string;
 
@@ -35,21 +35,20 @@ class Neuron<P> implements Receptor<P>, Actor<P> {
     }
 }
 
-abstract class BaseActor<P> implements Actor<P> {
+export abstract class BaseActor<P> implements Actor<P> {
     protected constructor(public name: string) {
     }
 
-
-    write(input: number): void {
-        this._innerWrite(Math.tanh(input));
+    write(input: number, properties: P): void {
+        this._innerWrite(Math.tanh(input), properties);
     }
 
-    abstract _innerWrite(input: number): void;
+    abstract _innerWrite(input: number, properties: P): void;
 }
 
-type ReceptorActorStringRepr = `${string}-${string}`
+export type ReceptorActorStringRepr = `${string}-${string}`
 
-class NeuralLink<P> {
+export class NeuralLink<P> {
     private constructor(public sensor: Receptor<P>,
                         public action: Actor<P>,
                         // From -4.0 to 4.0
@@ -86,10 +85,10 @@ class NeuralLink<P> {
 
 type ReprNeuralLinksMapping<P> = { [p: ReceptorActorStringRepr]: NeuralLink<P>[] };
 
-class Entity<P> {
-    constructor(private readonly properties: P,
+export class Entity<P> {
+    constructor(public readonly properties: P,
                 private readonly neurons: Neuron<P>[],
-                private readonly links: NeuralLink<P>[]) {
+                public readonly links: NeuralLink<P>[]) {
     }
 
     private static createParentLinkMapping<P>(parents: [Entity<P>, Entity<P>]): ReprNeuralLinksMapping<P> {
@@ -138,7 +137,7 @@ class Entity<P> {
             if (randomBoolean()) {
                 return Math.max(minimumParentLinkNumber - 1, 0);
             } else {
-                return Math.max(maximumParentLinkNumber + 1, maximumLinkNumber);
+                return Math.min(maximumParentLinkNumber + 1, maximumLinkNumber);
             }
         } else {
             return getRandomIntInclusive(minimumParentLinkNumber, maximumParentLinkNumber);
@@ -168,5 +167,68 @@ class Entity<P> {
 
     run(): void {
         this.links.forEach(link => link.act(this.properties));
+        this.neurons.forEach(neuron => neuron.clear())
+    }
+}
+
+export class Board<P> {
+    private _population: Entity<P>[];
+
+    constructor(private readonly populationSize: number,
+                private readonly generateProps: () => P,
+                private readonly receptors: Receptor<P>[],
+                private readonly actions: Actor<P>[],
+                private readonly neuronNumber: number,
+                private readonly maxLinks: number,
+                private readonly mutationRate: number) {
+        this._population = generateArray(populationSize, _ => this.generateRandomEntity());
+    }
+
+    tick(): void {
+        this._population.forEach(entity => entity.run());
+    }
+
+    kill(condition: (props: Readonly<P>) => boolean): void {
+        this._population = this._population.filter(entity => condition(entity.properties))
+    }
+
+    repopulate() {
+        const newPopulation: Entity<P>[] = [];
+        for (let i = 0; i < this.populationSize; i += 1) {
+            newPopulation.push(Entity.fromParents<P>(
+                this.generateProps(),
+                this.receptors,
+                this.neuronNumber,
+                this.actions,
+                this.maxLinks,
+                [this._population[i % this._population.length], this._population[(i + 1) % this._population.length]],
+                this.mutationRate
+            ))
+        }
+        this._population = newPopulation;
+    }
+
+    private generateRandomEntity() {
+        return Entity.random(
+            this.generateProps(),
+            this.receptors,
+            this.neuronNumber,
+            this.actions,
+            this.maxLinks
+        )
+    }
+
+    get population(): ReadonlyArray<Entity<P>> {
+        return this._population;
+    }
+
+    dumpPopulation() {
+        return this._population.map(({links}) => {
+            return links.map(({sensor, action, linkStrength}) => ({
+                sensor: sensor.name,
+                action: action.name,
+                linkStrength
+            }));
+        })
     }
 }

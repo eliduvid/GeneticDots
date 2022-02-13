@@ -1,9 +1,17 @@
-<html>
+<html lang="en">
 <head>
+    <title>Genetic Dots</title>
 </head>
-<body>
-	<canvas id="cnvs"></canvas>
-	<script src="bundle.js">
-	</script>
+<body style="display: flex">
+<canvas id="cnvs"></canvas>
+<div style="display: flex; flex-direction: column">
+    <label>Run: <input id="runChkbx" type="checkbox"></label>
+    <label>Fast-forward: <input id="ffChkbx" type="checkbox"></label>
+    <label>Generation: <span id="generation"></span></label>
+    <label>Survivors: <span id="survs"></span>/<span id="totalPop"></span></label>
+    <button id="dump">Download generation dump</button>
+</div>
+<script src="bundle.js">
+</script>
 </body>
 </html>
