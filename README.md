@@ -30,4 +30,4 @@ Downloads JSON file with all neural links of all dots in current gen. For now it
 * Savestates - I think it may be based on current dump function
 * More things for genetic algotith  to solve! - For now it's only "get to the right side of the board", but its relatively easy to write other ones or even do it user-defined.
 * More knobs and handles: neuron number, turns in gen, mutation rate, link number - you name it
-* Possibly rewrite dot implementation so the could interact with each other (for now they can even occupate same pixel).
+* Possibly rewrite dot implementation so they could interact with each other (for now they can even occupate same pixel).
