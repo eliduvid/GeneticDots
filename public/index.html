@@ -1,17 +1,19 @@
 <html lang="en">
 <head>
     <title>Genetic Dots</title>
+    <link rel="icon" type="image/png" href="favicon.png">
 </head>
-<body style="display: flex">
-<canvas id="cnvs"></canvas>
+<body style="display: flex;">
+<div>
+    <canvas id="cnvs" style="width: min(50vw, 90vh);"></canvas>
+</div>
 <div style="display: flex; flex-direction: column">
     <label>Run: <input id="runChkbx" type="checkbox"></label>
     <label>Fast-forward: <input id="ffChkbx" type="checkbox"></label>
-    <label>Generation: <span id="generation"></span></label>
-    <label>Survivors: <span id="survs"></span>/<span id="totalPop"></span></label>
+    <label>Generation: <span id="generation">0</span></label>
+    <label>Survivors: <span id="survs">0</span>/<span id="totalPop">0</span></label>
     <button id="dump">Download generation dump</button>
 </div>
 <script src="bundle.js">
 </script>
 </body>
-</html>
